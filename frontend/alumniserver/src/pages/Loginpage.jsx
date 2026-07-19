@@ -83,7 +83,7 @@ const Loginpage = () => {
           {/* Form */}
           <form onSubmit={handlelogin} className="px-8 pb-8 space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">Username or Email</label>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">Username</label>
               <input
                 value={username}
                 onChange={e => setUsername(e.target.value)}

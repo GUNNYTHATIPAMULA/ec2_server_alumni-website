@@ -67,7 +67,12 @@ class User(Base, UUIDMixin, TimestampMixin):
         nullable=True
     )
 
-    otp_expiry: Mapped[datetime] = mapped_column(
+    email_otp_expiry: Mapped[datetime] = mapped_column(
+        DateTime,
+        nullable=True
+    )
+
+    phone_otp_expiry: Mapped[datetime] = mapped_column(
         DateTime,
         nullable=True
     )

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { api, API_BASE_URL } from '../services/api';
 
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '', username: '', phoneNumber: '', otp: '',
     email: '', emailOtp: '',
-    batchStartingYear: '2023', batchEndingYear: '2023',
+    batchStartingYear: '', batchEndingYear: '',
     password: '', confirmPassword: '',
     occupation: '', company: '', rollNumber: '', department: '', degree: '',
     termsAccepted: false
@@ -26,8 +26,6 @@ const Register = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [profileImageUrl, setProfileImageUrl] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
-
-  const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -48,7 +46,7 @@ const Register = () => {
     try {
       const form = new FormData();
       form.append('file', file);
-      const res = await axios.post(`${API_BASE_URL}/upload/profile-image`, form);
+      const res = await api.post('/upload/profile-image', form);
       setProfileImageUrl(res.data.url);
       setProfileImage(file);
     } catch (err) {
@@ -64,7 +62,7 @@ const Register = () => {
     if (!formData.phoneNumber.match(/^[0-9]{10}$/)) { alert('Please enter a valid 10-digit phone number'); return; }
     setPhoneOtpLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/auth/send-phone-otp`, { phone_number: formData.phoneNumber, email: formData.email || undefined });
+      await api.post('/auth/send-phone-otp', { phone_number: formData.phoneNumber, email: formData.email || undefined });
       setIsOtpSent(true);
       alert('OTP sent to phone. Use 123456 as OTP.');
     } catch (err) {
@@ -77,7 +75,7 @@ const Register = () => {
   const handleVerifyOtp = async () => {
     setPhoneOtpLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/auth/verify-phone-otp`, {
+      await api.post('/auth/verify-phone-otp', {
         phone_number: formData.phoneNumber, otp: formData.otp
       });
       setIsPhoneVerified(true);
@@ -94,7 +92,7 @@ const Register = () => {
     if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { alert('Please enter a valid email address'); return; }
     setEmailOtpLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/auth/send-email-otp`, { email: formData.email, phone_number: formData.phoneNumber || undefined });
+      await api.post('/auth/send-email-otp', { email: formData.email, phone_number: formData.phoneNumber || undefined });
       setIsEmailOtpSent(true);
       alert('OTP sent to your email. Please check your inbox.');
     } catch (err) {
@@ -107,7 +105,7 @@ const Register = () => {
   const handleVerifyEmailOtp = async () => {
     setEmailOtpLoading(true);
     try {
-      await axios.post(`${API_BASE_URL}/auth/verify-email-otp`, {
+      await api.post('/auth/verify-email-otp', {
         email: formData.email, otp: formData.emailOtp
       });
       setIsEmailVerified(true);
@@ -160,7 +158,7 @@ const Register = () => {
         profile_image: profileImageUrl || null
       };
 
-      await axios.post(`${API_BASE_URL}/auth/register-alumni`, registerData);
+      await api.post('/auth/register-alumni', registerData);
       alert('Registration submitted successfully! Please login.');
       navigate('/login');
     } catch (error) {
@@ -209,7 +207,7 @@ const Register = () => {
                     </label>
                     {imageUploading && <span className="text-sm text-gray-500">Uploading...</span>}
                     {profileImageUrl && (
-                      <img src={`${API_BASE_URL}${profileImageUrl}`} alt="Preview" className="w-12 h-12 rounded-full object-cover border" />
+                      <img src={profileImageUrl} alt="Preview" className="w-12 h-12 rounded-full object-cover border" />
                     )}
                   </div>
                 </div>

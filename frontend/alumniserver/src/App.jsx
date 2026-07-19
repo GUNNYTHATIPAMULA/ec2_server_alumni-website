@@ -29,6 +29,7 @@ import Student_Events from "./pages/student/Student_Events"
 import Student_Profile from "./pages/student/Student_Profile"
 import { AuthProvider } from "./context/AuthContext"
 import Alumni_List from "./components/Alumni_List"
+import AdminRegistration from "./pages/admin/AdminRegistration"
 import ProtectedRoutes from "./components/ProtectedRoutes"
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="register" element={<Register />} />
             <Route path="login" element={<Loginpage />} />
+            <Route path="adminregister" element={<AdminRegistration />} />
           </Route>
           {/* PROTECTED ALUMNI */}
           <Route

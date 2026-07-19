@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     MAIL_SERVER: str
     UPLOAD_DIR: str = "uploads"
     BASE_URL: str = "http://localhost:8000"
+    SECRET_KEY: str = "change-me-in-production-use-a-real-secret"
 
     class Config:
         env_file = str(Path(__file__).resolve().parent.parent.parent / ".env")

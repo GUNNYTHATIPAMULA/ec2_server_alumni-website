@@ -7,6 +7,9 @@ import {
   Clock, Users, UserPlus, Loader2, CheckCircle, Circle, Briefcase, GraduationCap, Award, MapPin, FileText
 } from "lucide-react"
 import FutureCalendar from "../../components/FutureCalendar"
+import graduationImg from "../../assets/graduation.jpg"
+import culturalImg from "../../assets/cultural.jpg"
+import graduation2Img from "../../assets/graduation2.jpg"
 
 const Alumni_Dashboard = () => {
   const { user } = useAuth()
@@ -91,13 +94,11 @@ const Alumni_Dashboard = () => {
                 <button className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">View all</button>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {["Graduation Day", "Cultural Fest", "Convocation"].map((item) => (
-                  <figure key={item} className="group relative overflow-hidden rounded-xl aspect-[4/3] cursor-pointer bg-gradient-to-br from-blue-900/20 to-blue-700/20">
-                    <div className="h-full w-full flex items-center justify-center">
-                      <span className="text-4xl opacity-40">📷</span>
-                    </div>
+                {[{ name: "Graduation Day", img: graduationImg }, { name: "Cultural Fest", img: culturalImg }, { name: "Convocation", img: graduation2Img }].map((item) => (
+                  <figure key={item.name} className="group relative overflow-hidden rounded-xl aspect-[4/3] cursor-pointer">
+                    <img src={item.img} alt={item.name} className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent" />
-                    <figcaption className="absolute bottom-3 left-3 right-3 text-white font-semibold">{item}</figcaption>
+                    <figcaption className="absolute bottom-3 left-3 right-3 text-white font-semibold">{item.name}</figcaption>
                   </figure>
                 ))}
               </div>
@@ -182,10 +183,12 @@ const Alumni_Dashboard = () => {
             <section className="bg-white rounded-lg p-6 shadow-sm">
               <div className="flex items-start gap-3 mb-5">
                 <div className="h-14 w-14 rounded-full bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center ring-2 ring-blue-300 text-white font-bold text-xl overflow-hidden">
-                  {profile?.profile_image ? (
-                    <img src={profile.profile_image} alt="" className="h-full w-full object-cover" />
+                 {profile?.profile_image ? (
+                    <img src={profile.profile_image.startsWith('http') ? profile.profile_image : `${import.meta.env.VITE_BASE_API_URL}${profile.profile_image}`} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    profile?.full_name?.charAt(0) || 'A'
+                    <span className="text-2xl font-bold text-white">
+                      {profile?.full_name?.charAt(0) || user?.fullName?.charAt(0) || 'A'}
+                    </span>
                   )}
                 </div>
                 <div>

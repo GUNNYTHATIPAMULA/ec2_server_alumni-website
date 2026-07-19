@@ -1,7 +1,7 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Response
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.dependencies import get_db
 from app.core.security import create_access_token, get_current_user
@@ -35,16 +35,16 @@ async def send_email_otp_endpoint(data: SendEmailOtpSchema, db: AsyncSession = D
         if phone_user and not phone_user.is_verified:
             phone_user.email = data.email
             phone_user.email_otp = otp
-            phone_user.otp_expiry = datetime.utcnow() + timedelta(minutes=5)
+            phone_user.email_otp_expiry = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=5)
             await db.commit()
             await send_email_otp(data.email, otp)
             return {"message": "OTP sent to email"}
     if not user:
-        user = User(email=data.email, email_otp=otp, otp_expiry=datetime.utcnow() + timedelta(minutes=5))
+        user = User(username=data.email, email=data.email, email_otp=otp, email_otp_expiry=datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=5))
         db.add(user)
     else:
         user.email_otp = otp
-        user.otp_expiry = datetime.utcnow() + timedelta(minutes=5)
+        user.email_otp_expiry = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=5)
     await db.commit()
     await send_email_otp(data.email, otp)
     return {"message": "OTP sent to email"}
@@ -56,7 +56,7 @@ async def verify_email_otp_endpoint(data: VerifyEmailOtpSchema, db: AsyncSession
     user = result.scalar_one_or_none()
     if not user or not user.email_otp:
         raise HTTPException(status_code=400, detail="No OTP found. Request a new one.")
-    if user.otp_expiry and datetime.utcnow() > user.otp_expiry:
+    if user.email_otp_expiry and datetime.utcnow() > user.email_otp_expiry:
         raise HTTPException(status_code=400, detail="OTP expired. Request a new one.")
     if user.email_otp != data.otp:
         raise HTTPException(status_code=400, detail="Invalid OTP")
@@ -79,15 +79,15 @@ async def send_phone_otp_endpoint(data: SendPhoneOtpSchema, db: AsyncSession = D
         if email_user and not email_user.is_verified:
             email_user.phone_number = data.phone_number
             email_user.phone_otp = otp
-            email_user.otp_expiry = datetime.utcnow() + timedelta(minutes=5)
+            email_user.phone_otp_expiry = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=5)
             await db.commit()
             return {"message": "OTP sent to phone"}
     if not user:
-        user = User(phone_number=data.phone_number, phone_otp=otp, otp_expiry=datetime.utcnow() + timedelta(minutes=5))
+        user = User(phone_number=data.phone_number, phone_otp=otp, phone_otp_expiry=datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=5))
         db.add(user)
     else:
         user.phone_otp = otp
-        user.otp_expiry = datetime.utcnow() + timedelta(minutes=5)
+        user.phone_otp_expiry = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(minutes=5)
     await db.commit()
     return {"message": "OTP sent to phone"}
 
@@ -98,7 +98,7 @@ async def verify_phone_otp_endpoint(data: VerifyPhoneOtpSchema, db: AsyncSession
     user = result.scalar_one_or_none()
     if not user or not user.phone_otp:
         raise HTTPException(status_code=400, detail="No OTP found. Request a new one.")
-    if user.otp_expiry and datetime.utcnow() > user.otp_expiry:
+    if user.phone_otp_expiry and datetime.utcnow() > user.phone_otp_expiry:
         raise HTTPException(status_code=400, detail="OTP expired. Request a new one.")
     if user.phone_otp != data.otp:
         raise HTTPException(status_code=400, detail="Invalid OTP")
@@ -111,7 +111,7 @@ async def verify_phone_otp_endpoint(data: VerifyPhoneOtpSchema, db: AsyncSession
 @router.post("/login", response_model=TokenResponse)
 async def login(data: LoginSchema, response: Response, db: AsyncSession = Depends(get_db)):
     result = await db.execute(
-        select(User).where(User.username == data.username)
+        select(User).where(or_(User.username == data.username, User.email == data.username))
     )
     user = result.scalar_one_or_none()
     if not user:
@@ -166,18 +166,26 @@ async def login(data: LoginSchema, response: Response, db: AsyncSession = Depend
 @router.post("/register-admin")
 async def register_admin(data: AdminRegisterSchema, db: AsyncSession = Depends(get_db)):
     existing = await db.execute(select(User).where((User.email == data.email) | (User.username == data.username)))
-    if existing.scalar_one_or_none():
+    existing_users = existing.scalars().all()
+    verified_users = [u for u in existing_users if u.is_verified]
+    if verified_users:
         raise HTTPException(status_code=400, detail="Email or username already exists")
-    user = User(
-        username=data.username, email=data.email, phone_number=data.phone_number,
-        hashed_password=hash_password(data.password), role=UserRole.ADMIN, is_verified=True
-    )
-    db.add(user)
+
+    email_user = next((u for u in existing_users if u.email == data.email and u.email_verified), None)
+    if not email_user:
+        raise HTTPException(status_code=400, detail="Email not verified. Please verify your email first.")
+
+    user = email_user
+    user.username = data.username
+    user.hashed_password = hash_password(data.password)
+    user.phone_number = data.phone_number
+    user.role = UserRole.ADMIN
+    user.is_verified = True
     await db.flush()
     profile = AdminProfile(user_id=user.id, full_name=data.full_name, designation=data.designation, department=data.department)
     db.add(profile)
     await db.commit()
-    return {"message": "Admin registered successfully"}
+    return {"message": "Admin registered successfully. Please login."}
 
 
 @router.post("/register-alumni")
@@ -231,7 +239,7 @@ async def register_student(data: StudentRegisterSchema, db: AsyncSession = Depen
         raise HTTPException(status_code=400, detail="Email or username already exists")
     user = User(
         username=data.username, email=data.email, phone_number=data.phone_number,
-        hashed_password=hash_password(data.password), role=UserRole.STUDENT, is_verified=True
+        hashed_password=hash_password(data.password), role=UserRole.STUDENT, is_verified=False
     )
     db.add(user)
     await db.flush()
@@ -242,7 +250,7 @@ async def register_student(data: StudentRegisterSchema, db: AsyncSession = Depen
     )
     db.add(profile)
     await db.commit()
-    return {"message": "Student registered successfully"}
+    return {"message": "Student registered successfully. Awaiting admin approval."}
 
 
 @router.get("/me")

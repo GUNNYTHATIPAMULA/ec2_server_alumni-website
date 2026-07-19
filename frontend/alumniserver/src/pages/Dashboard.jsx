@@ -1,6 +1,9 @@
 import React, { use } from 'react';
 import FutureCalendar from '../components/FutureCalendar';
 import { useNavigate } from 'react-router-dom';
+import graduationImg from '../assets/graduation.jpg';
+import culturalImg from '../assets/cultural.jpg';
+import graduation2Img from '../assets/graduation2.jpg';
 const Dashboard = () => {
   // Sample data for alumni list
   const navigate = useNavigate();
@@ -61,14 +64,12 @@ const Dashboard = () => {
               </div>
               <div className="p-5">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {['Graduation Day', 'Cultural Fest', 'Debaudation Dary'].map((item, idx) => (
+                  {[{ name: 'Graduation Day', img: graduationImg }, { name: 'Cultural Fest', img: culturalImg }, { name: 'Debaudation Dary', img: graduation2Img }].map((item, idx) => (
                     <div key={idx} className="group cursor-pointer">
-                      <div className="bg-gray-100 rounded-xl h-32 flex items-center justify-center text-gray-400 group-hover:bg-indigo-50 transition-colors">
-                        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                      <div className="rounded-xl h-42 overflow-hidden group-hover:shadow-md transition-shadow">
+                        <img src={item.img} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       </div>
-                      <p className="mt-2 text-center text-gray-700 font-medium">{item}</p>
+                      <p className="mt-2 text-center text-gray-700 font-medium">{item.name}</p>
                     </div>
                   ))}
                 </div>
