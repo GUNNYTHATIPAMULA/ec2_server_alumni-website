@@ -255,7 +255,7 @@ const Dashboard = () => {
 
         {/* Footer note for responsive design */}
         <div className="mt-8 text-center text-xs text-gray-400 border-t border-gray-200 pt-6">
-          <p>© 2025 Alumni Network • Stay connected with your alma mater</p>
+          <p>© 2025 Alumni Network • Stay connected with your alma mater version 2.0</p>
         </div>
       </div>
     </div>
