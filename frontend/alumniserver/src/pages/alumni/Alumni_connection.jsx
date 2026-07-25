@@ -77,12 +77,12 @@ const Alumni_connection = () => {
     <div className="min-h-screen">
       <div className="max-w-6xl mx-auto md:px-4 px-1">
         {/* Header */}
-        <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-3xl p-6 md:p-8 mb-6 shadow-lg">
+        <div className="bg-blue-900 text-white rounded-3xl p-6 md:p-8 mb-6 shadow-lg">
           <div className="flex items-center gap-3 mb-2">
-            <Star size={28} className="text-gray-900" />
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Alumni Spotlights</h1>
+            <Star size={28} className="text-white" />
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-50">Alumni Spotlights</h1>
           </div>
-          <p className="text-gray-800 text-sm md:text-base max-w-xl">
+          <p className="text-slate-100 text-sm md:text-base max-w-xl">
             Discover and connect with fellow TKR alumni. Expand your professional network and build lasting relationships.
           </p>
         </div>
@@ -96,7 +96,7 @@ const Alumni_connection = () => {
           ].map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
-                tab === t.key ? 'bg-amber-500 text-gray-900 shadow-sm' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                tab === t.key ? 'bg-blue-900 text-white shadow-sm' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
               }`}
             >
               {t.label}
@@ -193,13 +193,13 @@ const Alumni_connection = () => {
                       <div className="flex gap-2">
                         <button onClick={() => handleConnect(a.user_id)}
                           disabled={actionLoading === a.user_id || isConnected || hasPending}
-                          className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition ${
+                          className={`flex-1 cursor-pointer flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition ${
                             isConnected
-                              ? 'bg-gray-100 text-gray-400 cursor-default'
+                              ? 'bg-blue-600 text-white cursor-default'
                               : hasPending
                                 ? 'bg-amber-50 text-amber-700 cursor-default'
-                                : 'bg-amber-500 text-gray-900 hover:bg-amber-600'
-                          } disabled:opacity-50`}
+                                : 'bg-amber-300 text-gray-900 hover:bg-amber-400'
+                          } `}
                         >
                           {actionLoading === a.user_id ? (
                             <Loader2 className="h-3 w-3 animate-spin" />
@@ -211,7 +211,7 @@ const Alumni_connection = () => {
                             <><UserPlus size={13} /> Connect</>
                           )}
                         </button>
-                        <button className="flex items-center justify-center gap-1.5 border border-gray-200 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:bg-gray-50 transition">
+                        <button className="flex cursor-pointer items-center justify-center gap-1.5 border border-gray-200 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:bg-gray-50 transition">
                           <MessageCircle size={13} /> Message
                         </button>
                       </div>

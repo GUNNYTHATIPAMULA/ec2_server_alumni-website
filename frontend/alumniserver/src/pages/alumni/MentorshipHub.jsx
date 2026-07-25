@@ -73,13 +73,13 @@ const MentorshipHub = () => {
         <div className="flex justify-center gap-3 mb-8">
           <button onClick={() => setTab('mentors')}
             className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition ${
-              tab === 'mentors' ? 'bg-amber-500 text-gray-900 shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+              tab === 'mentors' ? 'bg-blue-800 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
             }`}>
             Find Mentors
           </button>
           <button onClick={() => setTab('requests')}
             className={`px-6 py-2.5 rounded-xl text-sm font-semibold transition relative ${
-              tab === 'requests' ? 'bg-amber-500 text-gray-900 shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+              tab === 'requests' ? 'bg-blue-800 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
             }`}>
             My Requests
             {pendingRequests.length > 0 && (
@@ -122,7 +122,7 @@ const MentorshipHub = () => {
                         className={`w-full flex items-center justify-center gap-2 font-semibold py-3 rounded-xl transition ${
                           hasPending
                             ? 'bg-gray-100 text-gray-400 cursor-default'
-                            : 'bg-amber-500 text-gray-900 hover:bg-amber-600'
+                            : 'bg-blue-900 text-white hover:bg-blue-800'
                         } disabled:opacity-50`}>
                         {actionLoading === mentor.user_id ? (
                           <Loader2 className="h-4 w-4 animate-spin" />

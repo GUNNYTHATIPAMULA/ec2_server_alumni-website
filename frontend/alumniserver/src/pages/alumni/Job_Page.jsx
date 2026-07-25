@@ -63,7 +63,7 @@ const Job_Page = () => {
             <span className="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border">{jobs.length} openings</span>
           </div>
           <button onClick={() => setShowPost(!showPost)}
-            className="flex items-center gap-2 bg-amber-500 text-gray-900 font-semibold px-4 py-2.5 rounded-xl hover:bg-amber-600 transition text-sm">
+            className="flex items-center gap-2 bg-blue-900 text-white font-semibold px-4 py-2.5 rounded-xl hover:bg-amber-600 transition text-sm">
             {showPost ? <X size={16} /> : <Plus size={16} />}
             {showPost ? 'Cancel' : 'Post a Job'}
           </button>
@@ -148,9 +148,17 @@ const Job_Page = () => {
                         <span className="flex items-center gap-1"><Briefcase size={12} /> {job.employment_type}</span>
                         {job.created_at && <span className="flex items-center gap-1"><Calendar size={12} /> Posted {formatDate(job.created_at)}</span>}
                       </div>
-                      {job.salary_range && <span className="inline-block mt-2 text-xs font-semibold bg-green-50 text-green-700 px-2 py-0.5 rounded-full">{job.salary_range}</span>}
+                      <div className=" flex justify-between">
+                        {job.salary_range && <span className="inline-block mt-2 text-xs font-semibold bg-green-50 text-green-700 px-2 py-0.5 rounded-full">{job.salary_range}</span>}
+                             <button onClick={() => window.location.href = `mailto:${job.contact_email}`}
+                      className="flex items-center gap-1 bg-blue-900 text-white font-semibold px-3 py-2 rounded-xl hover:bg-amber-600 transition text-sm">
+                      <span>Apply</span>
+                    </button>
+                      </div>
                     </div>
+                
                   </div>
+               
                 </div>
               ))}
             </div>
@@ -178,7 +186,7 @@ const Job_Page = () => {
                   </div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-5 text-gray-900">
+              <div className="bg-gradient-to-br from-amber-400 to-amber-500 rounded-2xl p-5 text-gray-900">
                 <h3 className="font-bold text-lg mb-1">Featured Opportunities</h3>
                 <p className="text-sm opacity-90">Discover top job matches tailored for TKR alumni.</p>
               </div>

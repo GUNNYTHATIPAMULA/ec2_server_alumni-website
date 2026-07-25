@@ -116,9 +116,9 @@ const All_Alumni = () => {
                         disabled={actionLoading === a.user_id || isConnected}
                         className={`flex-1 rounded-xl px-3 py-2 text-xs font-semibold transition flex items-center justify-center gap-1 ${
                           isConnected
-                            ? 'bg-gray-100 text-gray-400 cursor-default'
+                            ? 'bg-blue-800 text-white cursor-default'
                             : 'bg-amber-500 text-gray-900 hover:bg-amber-600'
-                        } disabled:opacity-50`}
+                        }`}
                       >
                         {actionLoading === a.user_id ? (
                           <Loader2 className="h-3 w-3 animate-spin" />

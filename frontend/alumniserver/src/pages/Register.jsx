@@ -258,7 +258,7 @@ const Register = () => {
                       <button type="button" onClick={isOtpSent ? handleVerifyOtp : handleSendOtp}
                         disabled={isOtpSent ? phoneOtpLoading : (!formData.phoneNumber || formData.phoneNumber.length !== 10 || phoneOtpLoading)}
                         className={`px-3 py-2 rounded-sm font-medium whitespace-nowrap ${isOtpSent || !formData.phoneNumber || formData.phoneNumber.length !== 10 || phoneOtpLoading
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'}`}>
+                          ? 'bg-blue-500 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'}`}>
                         {phoneOtpLoading ? 'Sending...' : (isOtpSent ? 'Verify OTP' : 'Send OTP')}
                       </button>
                     ) : (
@@ -283,7 +283,7 @@ const Register = () => {
                       <button type="button" onClick={isEmailOtpSent ? handleVerifyEmailOtp : handleSendEmailOtp}
                         disabled={isEmailOtpSent ? emailOtpLoading : (!formData.email || emailOtpLoading)}
                         className={`px-3 py-2 rounded-sm font-medium whitespace-nowrap ${isEmailOtpSent || !formData.email || emailOtpLoading
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'}`}>
+                          ? 'bg-blue-500 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'}`}>
                         {emailOtpLoading ? 'Sending...' : (isEmailOtpSent ? 'Verify OTP' : 'Send OTP')}
                       </button>
                     ) : (
