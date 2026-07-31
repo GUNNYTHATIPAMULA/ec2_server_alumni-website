@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     MAIL_FROM: str
     MAIL_PORT: int
     MAIL_SERVER: str
-    UPLOAD_DIR: str = "uploads"
+    UPLOAD_DIR: str = str(Path(__file__).resolve().parent.parent.parent / "uploads")
     BASE_URL: str = "http://localhost:8000"
     SECRET_KEY: str = "change-me-in-production-use-a-real-secret"
 

@@ -65,9 +65,16 @@ async def startup():
                     await conn.execute(text(
                         "ALTER TABLE posts ADD COLUMN like_count INTEGER DEFAULT 0"
                     ))
-        await conn.execute(text(
-            "ALTER TABLE posts ALTER COLUMN status SET DEFAULT 'published'"
-        ))
+        raw = await conn.execute(
+            text(
+                "SELECT column_name FROM information_schema.columns "
+                "WHERE table_name='posts' AND column_name='status'"
+            )
+        )
+        if raw.fetchone():
+            await conn.execute(text(
+                "ALTER TABLE posts ALTER COLUMN status SET DEFAULT 'published'"
+            ))
     async with engine.begin() as conn:
         raw = await conn.execute(
             text(

@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { api } from '../../services/api'
+import { api, API_BASE_URL } from '../../services/api'
 import { Loader2, Search, Users, UserPlus, Check, Eye, Briefcase, MapPin, GraduationCap } from 'lucide-react'
+
+const img = (url) => url ? (url.startsWith('http') ? url : `${API_BASE_URL}${url}`) : null
 
 const All_Alumni = () => {
   const [alumni, setAlumni] = useState([])
@@ -102,7 +104,7 @@ const All_Alumni = () => {
                     <div className="mb-3 flex items-start gap-3">
                       <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center text-white font-bold text-xl shrink-0 overflow-hidden">
                         {a.profile_image ? (
-                          <img src={a.profile_image} alt="" className="h-full w-full object-cover" />
+                          <img src={img(a.profile_image)} alt="" className="h-full w-full object-cover" />
                         ) : (
                           a.full_name?.charAt(0) || '?'
                         )}
