@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { api } from '../../services/api'
-import { Users, UserPlus, Loader2, Check, X, MessageCircle, Search, Briefcase, GraduationCap, Star } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { api, API_BASE_URL } from '../../services/api'
+import { Users, UserPlus, Loader2, Check, X, Eye, Search, Briefcase, GraduationCap, Star } from 'lucide-react'
+
+const img = (url) => url ? (url.startsWith('http') ? url : `${API_BASE_URL}${url}`) : null
 
 const Alumni_connection = () => {
+  const navigate = useNavigate()
   const [connections, setConnections] = useState([])
   const [pending, setPending] = useState([])
   const [alumni, setAlumni] = useState([])
@@ -113,30 +117,48 @@ const Alumni_connection = () => {
             </h2>
             <div className="space-y-2">
               {pending.map(req => (
-                <div key={req.id} className="bg-white rounded-xl border border-gray-100 p-4 flex items-center justify-between shadow-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center font-bold text-white">
-                      {req.full_name?.charAt(0) || '?'}
+                <div key={req.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-11 h-11 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center font-bold text-white overflow-hidden shrink-0">
+                        {req.profile_image ? (
+                          <img src={img(req.profile_image)} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          req.full_name?.charAt(0) || '?'
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <button onClick={() => navigate(`/alumnidashboard/profile/${req.other_user_id || req.sender_id}`)}
+                          className="font-semibold text-gray-900 text-sm hover:text-blue-700 transition truncate block">
+                          {req.full_name || 'Unknown'}
+                        </button>
+                        {req.occupation && (
+                          <p className="text-xs text-gray-500 truncate">
+                            {req.occupation}{req.company_name ? ` at ${req.company_name}` : ''}
+                          </p>
+                        )}
+                        <p className="text-xs text-gray-400">Wants to connect with you</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-gray-900 text-sm">{req.full_name || 'Unknown'}</p>
-                      <p className="text-xs text-gray-500">Wants to connect with you</p>
+                    <div className="flex gap-2 flex-wrap">
+                      <button onClick={() => navigate(`/alumnidashboard/profile/${req.other_user_id || req.sender_id}`)}
+                        className="flex items-center gap-1 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg text-xs hover:bg-gray-50 transition">
+                        <Eye size={13} /> View Profile
+                      </button>
+                      <button onClick={() => handleRespond(req.id, 'accepted')}
+                        disabled={actionLoading === req.id}
+                        className="flex items-center gap-1 bg-blue-900 text-white px-3 py-1.5 rounded-lg text-xs hover:bg-blue-800 transition disabled:opacity-50"
+                      >
+                        {actionLoading === req.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check size={13} />}
+                        Accept
+                      </button>
+                      <button onClick={() => handleRespond(req.id, 'rejected')}
+                        disabled={actionLoading === req.id}
+                        className="flex items-center gap-1 bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs hover:bg-red-200 transition disabled:opacity-50"
+                      >
+                        <X size={13} /> Reject
+                      </button>
                     </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => handleRespond(req.id, 'accepted')}
-                      disabled={actionLoading === req.id}
-                      className="flex items-center gap-1 bg-blue-900 text-white px-3 py-1.5 rounded-lg text-xs hover:bg-blue-800 transition disabled:opacity-50"
-                    >
-                      {actionLoading === req.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check size={13} />}
-                      Accept
-                    </button>
-                    <button onClick={() => handleRespond(req.id, 'rejected')}
-                      disabled={actionLoading === req.id}
-                      className="flex items-center gap-1 bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs hover:bg-red-200 transition disabled:opacity-50"
-                    >
-                      <X size={13} /> Reject
-                    </button>
                   </div>
                 </div>
               ))}
@@ -171,13 +193,13 @@ const Alumni_connection = () => {
                   return (
                     <div key={a.id} className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-all">
                       <div className="flex items-start gap-3 mb-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center text-white font-bold text-lg shrink-0 overflow-hidden">
-                          {a.profile_image ? (
-                            <img src={a.profile_image} alt="" className="h-full w-full object-cover" />
-                          ) : (
-                            a.full_name?.charAt(0) || '?'
-                          )}
-                        </div>
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center text-white font-bold text-lg shrink-0 overflow-hidden">
+                        {a.profile_image ? (
+                          <img src={img(a.profile_image)} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          a.full_name?.charAt(0) || '?'
+                        )}
+                      </div>
                         <div className="min-w-0 flex-1">
                           <h3 className="font-bold text-gray-900 truncate">{a.full_name}</h3>
                           <p className="text-xs text-gray-500 flex items-center gap-1">
@@ -211,8 +233,9 @@ const Alumni_connection = () => {
                             <><UserPlus size={13} /> Connect</>
                           )}
                         </button>
-                        <button className="flex cursor-pointer items-center justify-center gap-1.5 border border-gray-200 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:bg-gray-50 transition">
-                          <MessageCircle size={13} /> Message
+                        <button onClick={() => navigate(`/alumnidashboard/profile/${a.user_id}`)}
+                          className="flex cursor-pointer items-center justify-center gap-1.5 border border-gray-200 px-3 py-2 rounded-xl text-xs font-semibold text-blue-800 hover:bg-blue-50 transition">
+                          <Eye size={13} /> View Profile
                         </button>
                       </div>
                     </div>
@@ -237,8 +260,12 @@ const Alumni_connection = () => {
                 {alumni.filter(a => connectedUserIds.has(a.user_id)).map(a => (
                   <div key={a.id} className="bg-white rounded-2xl border border-green-100 p-5 shadow-sm">
                     <div className="flex items-start gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-lg">
-                        {a.full_name?.charAt(0) || '?'}
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-lg overflow-hidden shrink-0">
+                        {a.profile_image ? (
+                          <img src={img(a.profile_image)} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          a.full_name?.charAt(0) || '?'
+                        )}
                       </div>
                       <div className="min-w-0">
                         <h3 className="font-bold text-gray-900 truncate">{a.full_name}</h3>
@@ -255,8 +282,9 @@ const Alumni_connection = () => {
                       <span className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-green-50 text-green-700">
                         <Check size={13} /> Connected
                       </span>
-                      <button className="flex items-center justify-center gap-1.5 border border-gray-200 px-3 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:bg-gray-50 transition">
-                        <MessageCircle size={13} /> Message
+                      <button onClick={() => navigate(`/alumnidashboard/profile/${a.user_id}`)}
+                        className="flex items-center justify-center gap-1.5 border border-gray-200 px-3 py-2 rounded-xl text-xs font-semibold text-blue-800 hover:bg-blue-50 transition">
+                        <Eye size={13} /> View Profile
                       </button>
                     </div>
                   </div>

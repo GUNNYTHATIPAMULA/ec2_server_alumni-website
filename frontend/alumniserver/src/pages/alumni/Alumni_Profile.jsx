@@ -14,9 +14,13 @@ import {
   BookOpen,
   Award,
 } from "lucide-react";
-import { api } from "../../services/api";
+import { api, API_BASE_URL } from "../../services/api";
+import { useNavigate } from "react-router-dom";
+
+const img = (url) => url ? (url.startsWith("http") ? url : `${API_BASE_URL}${url}`) : null;
 
 const Alumni_Profile = () => {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,6 +29,7 @@ const Alumni_Profile = () => {
   const [creating, setCreating] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const [form, setForm] = useState({});
+  const [connections, setConnections] = useState([]);
   const [createForm, setCreateForm] = useState({
     full_name: "",
     roll_number: "",
@@ -35,6 +40,7 @@ const Alumni_Profile = () => {
     occupation: "",
     company_name: "",
     current_location: "",
+    address: "",
     linkedin_url: "",
     github_url: "",
     bio: "",
@@ -75,6 +81,7 @@ const Alumni_Profile = () => {
         occupation: profileData.occupation || "",
         company_name: profileData.company_name || "",
         current_location: profileData.current_location || "",
+        address: profileData.address || "",
         linkedin_url: profileData.linkedin_url || "",
         github_url: profileData.github_url || "",
         profile_image: profileData.profile_image || "",
@@ -92,14 +99,16 @@ const Alumni_Profile = () => {
     }
 
     try {
-      const [skillsRes, educationRes, experienceRes] = await Promise.all([
+      const [skillsRes, educationRes, experienceRes, connectionsRes] = await Promise.all([
         api.get("/alumni/skills").catch(() => ({ data: [] })),
         api.get("/alumni/education").catch(() => ({ data: [] })),
         api.get("/alumni/experience").catch(() => ({ data: [] })),
+        api.get("/connections").catch(() => ({ data: [] })),
       ]);
       setSkills(skillsRes.data);
       setEducation(educationRes.data);
       setExperiences(experienceRes.data);
+      setConnections(connectionsRes.data);
     } catch (err) {
       console.error("Error loading sub-resources:", err);
     } finally {
@@ -143,6 +152,7 @@ const Alumni_Profile = () => {
         occupation: res.data.occupation || "",
         company_name: res.data.company_name || "",
         current_location: res.data.current_location || "",
+        address: res.data.address || "",
         linkedin_url: res.data.linkedin_url || "",
         github_url: res.data.github_url || "",
         profile_image: res.data.profile_image || "",
@@ -344,6 +354,7 @@ const Alumni_Profile = () => {
                 <input placeholder="Company" value={createForm.company_name} onChange={(e) => setCreateForm({...createForm, company_name: e.target.value})} className="px-3 py-2 border rounded-lg text-sm" />
               </div>
               <input placeholder="Current Location" value={createForm.current_location} onChange={(e) => setCreateForm({...createForm, current_location: e.target.value})} className="w-full px-3 py-2 border rounded-lg text-sm" />
+              <input placeholder="Address" value={createForm.address} onChange={(e) => setCreateForm({...createForm, address: e.target.value})} className="w-full px-3 py-2 border rounded-lg text-sm" />
               <input placeholder="LinkedIn URL" value={createForm.linkedin_url} onChange={(e) => setCreateForm({...createForm, linkedin_url: e.target.value})} className="w-full px-3 py-2 border rounded-lg text-sm" />
               <input placeholder="GitHub URL" value={createForm.github_url} onChange={(e) => setCreateForm({...createForm, github_url: e.target.value})} className="w-full px-3 py-2 border rounded-lg text-sm" />
               <textarea placeholder="Bio" value={createForm.bio} onChange={(e) => setCreateForm({...createForm, bio: e.target.value})} rows={3} className="w-full px-3 py-2 border rounded-lg text-sm" />
@@ -451,6 +462,13 @@ const Alumni_Profile = () => {
                   className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <input
+                  type="text"
+                  placeholder="Address"
+                  value={form.address}
+                  onChange={(e) => setForm({ ...form, address: e.target.value })}
+                  className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <input
                   type="url"
                   placeholder="LinkedIn URL"
                   value={form.linkedin_url}
@@ -484,8 +502,19 @@ const Alumni_Profile = () => {
               </button>
             </div>
           )}
+           <div className="flex items-center justify-between m-4 mb-0">
+            <h2 className="text-base font-semibold text-gray-800 flex items-center gap-2">
+              <Users size={18} className="text-blue-600" />
+              Connections {connections.length}
+            </h2>
+            <button
+              onClick={() => navigate("/alumnidashboard/spotlights")}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              View all
+            </button>
+          </div>
         </div>
-
         {/* Two Column Layout */}
         <div className="grid md:grid-cols-2 gap-6">
           {/* Left Column */}
@@ -505,6 +534,7 @@ const Alumni_Profile = () => {
                   value={`${profile.batch_start_year} - ${profile.batch_end_year}`}
                   icon={Calendar}
                 />
+                <InfoItem label="Address" value={profile.address} icon={MapPin} />
                 {profile.linkedin_url && (
                   <InfoItem label="LinkedIn" value="View Profile" isLink link={profile.linkedin_url} />
                 )}

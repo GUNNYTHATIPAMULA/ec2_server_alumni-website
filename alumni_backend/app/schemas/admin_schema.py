@@ -41,6 +41,7 @@ class DashboardStats(BaseModel):
     total_jobs: int = 0
     total_mentorship_requests: int = 0
     pending_approvals: int
+    pending_posts: int = 0
 
 
 class AlumniAdminResponse(BaseModel):
@@ -55,6 +56,11 @@ class AlumniAdminResponse(BaseModel):
     occupation: str | None = None
     company_name: str | None = None
     email: str
+    username: str | None = None
+    phone_number: str | None = None
+    profile_image: str | None = None
+    current_location: str | None = None
+    address: str | None = None
     is_verified: bool
     is_active: bool
 
@@ -71,6 +77,7 @@ class AlumniDetailResponse(BaseModel):
     occupation: str | None = None
     company_name: str | None = None
     current_location: str | None = None
+    address: str | None = None
     linkedin_url: str | None = None
     github_url: str | None = None
     profile_image: str | None = None
@@ -119,8 +126,27 @@ class AdminPostResponse(BaseModel):
     content: str
     author_id: str
     author_name: Optional[str] = None
+    author_role: Optional[str] = None
+    author_image: Optional[str] = None
+    author_email: Optional[str] = None
+    author_phone: Optional[str] = None
     is_published: bool
     tags: Optional[str] = None
     image_url: Optional[str] = None
     like_count: int
+    created_at: datetime
+
+
+class PostRequestResponse(BaseModel):
+    id: str
+    title: str
+    content: str
+    author_id: str
+    author_name: Optional[str] = None
+    author_role: Optional[str] = None
+    author_image: Optional[str] = None
+    author_email: Optional[str] = None
+    author_phone: Optional[str] = None
+    tags: Optional[str] = None
+    image_url: Optional[str] = None
     created_at: datetime

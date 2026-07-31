@@ -44,6 +44,42 @@ async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     async with engine.begin() as conn:
+        for col in ["is_published", "tags", "like_count"]:
+            raw = await conn.execute(
+                text(
+                    "SELECT column_name FROM information_schema.columns "
+                    "WHERE table_name='posts' AND column_name=:col"
+                ),
+                {"col": col},
+            )
+            if not raw.fetchone():
+                if col == "is_published":
+                    await conn.execute(text(
+                        "ALTER TABLE posts ADD COLUMN is_published BOOLEAN DEFAULT TRUE"
+                    ))
+                elif col == "tags":
+                    await conn.execute(text(
+                        "ALTER TABLE posts ADD COLUMN tags VARCHAR(500)"
+                    ))
+                else:
+                    await conn.execute(text(
+                        "ALTER TABLE posts ADD COLUMN like_count INTEGER DEFAULT 0"
+                    ))
+        await conn.execute(text(
+            "ALTER TABLE posts ALTER COLUMN status SET DEFAULT 'published'"
+        ))
+    async with engine.begin() as conn:
+        raw = await conn.execute(
+            text(
+                "SELECT column_name FROM information_schema.columns "
+                "WHERE table_name='alumni_profiles' AND column_name='address'"
+            )
+        )
+        if not raw.fetchone():
+            await conn.execute(text(
+                "ALTER TABLE alumni_profiles ADD COLUMN address VARCHAR(255)"
+            ))
+    async with engine.begin() as conn:
         raw = await conn.execute(
             text(
                 "SELECT column_name FROM information_schema.columns "

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { api } from '../../services/api'
-import { Loader2, Search, Shield, ShieldOff, Users, Check, X, Mail, Phone, MapPin, GraduationCap, Calendar, ExternalLink } from 'lucide-react'
+import { api, API_BASE_URL } from '../../services/api'
+import { Loader2, Search, Shield, ShieldOff, Users, Check, X, Mail, Phone, MapPin, GraduationCap, Calendar, ExternalLink, User } from 'lucide-react'
+
+const img = (url) => url ? (url.startsWith('http') ? url : `${API_BASE_URL}${url}`) : null
 
 const Admin_AllAlumni = () => {
   const [alumni, setAlumni] = useState([])
@@ -153,14 +155,19 @@ const Admin_AllAlumni = () => {
           </div>
           <div className="p-4 space-y-4">
             <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
-              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center text-white font-bold text-lg">
-                {selectedAlumni.profile_image || selectedAlumni.full_name?.charAt(0) || 'A'}
+              <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center text-white font-bold text-lg overflow-hidden">
+                {selectedAlumni.profile_image ? (
+                  <img src={img(selectedAlumni.profile_image)} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  selectedAlumni.full_name?.charAt(0) || 'A'
+                )}
               </div>
               <div className="min-w-0">
                 <h3 className="text-sm font-bold text-gray-900 truncate">{selectedAlumni.full_name}</h3>
                 <p className="text-xs text-gray-500 truncate">{selectedAlumni.occupation || 'Alumni'}{selectedAlumni.company_name ? ` at ${selectedAlumni.company_name}` : ''}</p>
               </div>
             </div>
+            <DetailRow icon={User} label="Username" value={selectedAlumni.username || 'N/A'} />
             <DetailRow icon={Mail} label="Email" value={selectedAlumni.email} />
             <DetailRow icon={Phone} label="Phone" value={selectedAlumni.phone_number || 'N/A'} />
             <DetailRow icon={GraduationCap} label="Roll Number" value={selectedAlumni.roll_number} />
@@ -168,6 +175,7 @@ const Admin_AllAlumni = () => {
             <DetailRow icon={GraduationCap} label="Degree" value={selectedAlumni.degree} />
             <DetailRow icon={Calendar} label="Batch" value={`${selectedAlumni.batch_start_year} - ${selectedAlumni.batch_end_year}`} />
             <DetailRow icon={MapPin} label="Location" value={selectedAlumni.current_location || 'N/A'} />
+            <DetailRow icon={MapPin} label="Address" value={selectedAlumni.address || 'N/A'} />
             {selectedAlumni.linkedin_url && (
               <DetailRow icon={LinkedInIcon} label="LinkedIn" value={selectedAlumni.linkedin_url} isLink />
             )}

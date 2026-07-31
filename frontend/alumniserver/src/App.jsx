@@ -17,6 +17,7 @@ import Alumni_connection from "./pages/alumni/Alumni_connection"
 import Contributions from "./pages/alumni/Contributions"
 import Notifications from "./pages/alumni/Notifications"
 import Posts from "./pages/alumni/Posts"
+import ViewProfile from "./pages/alumni/ViewProfile"
 import Admin_Dashboard from "./pages/admin/Admin_Dashboard"
 import Admin_AllAlumni from "./pages/admin/Admin_AllAlumni"
 import Admin_Events from "./pages/admin/Admin_Events"
@@ -55,6 +56,7 @@ function App() {
             <Route index element={<Alumni_Dashboard />} />
             <Route path="alumnidirectory" element={<All_Alumni />} />
             <Route path="profile" element={<Alumni_Profile />} />
+            <Route path="profile/:userId" element={<ViewProfile />} />
             <Route path="jobs" element={<Job_Page />} />
             <Route path="mentorship" element={<MentorshipHub />} />
             <Route path="events" element={<Events_alumni />} />

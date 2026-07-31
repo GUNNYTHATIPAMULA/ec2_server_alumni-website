@@ -9,6 +9,7 @@ from typing import List
 from app.core.dependencies import get_db
 from app.schemas.connection_schema import (
     ConnectionResponseSchema,
+    ConnectionDetailsSchema,
     ConnectionUpdateSchema
 )
 from app.services.connection_service import (
@@ -82,7 +83,7 @@ async def update_connection_request(
 
 @router.get(
     "/pending",
-    response_model=List[ConnectionResponseSchema]
+    response_model=List[ConnectionDetailsSchema]
 )
 async def list_pending_requests(
     current_user: User = Depends(get_current_user),
@@ -106,7 +107,7 @@ async def list_pending_requests(
 
 @router.get(
     "",
-    response_model=List[ConnectionResponseSchema]
+    response_model=List[ConnectionDetailsSchema]
 )
 async def list_connections(
     current_user: User = Depends(get_current_user),

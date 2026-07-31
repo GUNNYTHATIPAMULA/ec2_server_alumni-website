@@ -224,6 +224,7 @@ async def register_alumni(data: AlumniRegisterSchema, db: AsyncSession = Depends
         user_id=base_user.id, full_name=data.full_name, roll_number=data.roll_number,
         branch=data.branch, degree=data.degree, batch_start_year=data.batch_start_year,
         batch_end_year=data.batch_end_year, occupation=data.occupation, company_name=data.company_name,
+        current_location=data.current_location, address=data.address,
         profile_image=data.profile_image
     )
     db.add(profile)

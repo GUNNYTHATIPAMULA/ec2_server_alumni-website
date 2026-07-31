@@ -24,6 +24,8 @@ class AlumniRegisterSchema(BaseModel):
     batch_end_year: int
     occupation: str | None = None
     company_name: str | None = None
+    current_location: str | None = None
+    address: str | None = None
     profile_image: str | None = None
 
     @field_validator("batch_end_year")

@@ -67,6 +67,11 @@ class AlumniProfile(Base, UUIDMixin, TimestampMixin):
         nullable=True
     )
 
+    address: Mapped[str] = mapped_column(
+        String(255),
+        nullable=True
+    )
+
     linkedin_url: Mapped[str] = mapped_column(
         String(500),
         nullable=True

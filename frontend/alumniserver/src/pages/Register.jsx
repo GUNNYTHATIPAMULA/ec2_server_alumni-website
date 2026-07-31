@@ -9,7 +9,7 @@ const Register = () => {
     email: '', emailOtp: '',
     batchStartingYear: '', batchEndingYear: '',
     password: '', confirmPassword: '',
-    occupation: '', company: '', rollNumber: '', department: '', degree: '',
+    occupation: '', company: '', address: '', rollNumber: '', department: '', degree: '',
     termsAccepted: false
   });
 
@@ -155,6 +155,7 @@ const Register = () => {
         batch_end_year: parseInt(formData.batchEndingYear),
         occupation: formData.occupation || null,
         company_name: formData.company || null,
+        address: formData.address || null,
         profile_image: profileImageUrl || null
       };
 
@@ -332,6 +333,11 @@ const Register = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
                   <input type="text" name="company" value={formData.company} onChange={handleChange} placeholder="e.g., Google"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                  <input type="text" name="address" value={formData.address} onChange={handleChange} placeholder="Enter your current address"
                     className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
                 </div>
               </div>

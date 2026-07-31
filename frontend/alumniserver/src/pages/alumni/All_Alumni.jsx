@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { api } from '../../services/api'
-import { Loader2, Search, Users, UserPlus, Check, MessageCircle, Briefcase, MapPin, GraduationCap } from 'lucide-react'
+import { Loader2, Search, Users, UserPlus, Check, Eye, Briefcase, MapPin, GraduationCap } from 'lucide-react'
 
 const All_Alumni = () => {
   const [alumni, setAlumni] = useState([])
+  const navigate = useNavigate()
   const [connections, setConnections] = useState([])
+  const [pendingUsers, setPendingUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
@@ -15,21 +18,28 @@ const All_Alumni = () => {
     Promise.all([
       api.get('/alumni/directory'),
       api.get('/connections').catch(() => ({ data: [] })),
-    ]).then(([dirRes, connRes]) => {
+      api.get('/connections/pending').catch(() => ({ data: [] })),
+    ]).then(([dirRes, connRes, pendingRes]) => {
       setAlumni(dirRes.data || [])
       setConnections(connRes.data || [])
+      setPendingUsers(pendingRes.data || [])
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [])
 
-  const connectedIds = new Set(connections.map(c => c.sender_id || c.receiver_id))
+  const connectedIds = new Set(connections.map(c => c.other_user_id))
+  const pendingIds = new Set(pendingUsers.map(c => c.other_user_id))
 
   const handleConnect = async (userId) => {
     setActionLoading(userId)
     try {
       await api.post(`/connections/request/${userId}`)
-      const res = await api.get('/connections').catch(() => ({ data: [] }))
-      setConnections(res.data || [])
+      const [connRes, pendingRes] = await Promise.all([
+        api.get('/connections').catch(() => ({ data: [] })),
+        api.get('/connections/pending').catch(() => ({ data: [] })),
+      ])
+      setConnections(connRes.data || [])
+      setPendingUsers(pendingRes.data || [])
     } catch (err) {
       alert(err.response?.data?.detail || 'Failed to send request')
     } finally {
@@ -86,6 +96,7 @@ const All_Alumni = () => {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {paginated.map((a) => {
                 const isConnected = connectedIds.has(a.user_id)
+                const hasPending = pendingIds.has(a.user_id)
                 return (
                   <div key={a.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-all">
                     <div className="mb-3 flex items-start gap-3">
@@ -109,21 +120,26 @@ const All_Alumni = () => {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition flex items-center justify-center gap-1">
-                        <MessageCircle size={13} /> Message
+                      <button onClick={() => navigate(`/alumnidashboard/profile/${a.user_id}`)}
+                        className="flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-semibold text-blue-800 hover:bg-blue-50 transition flex items-center justify-center gap-1">
+                        <Eye size={13} /> View Profile
                       </button>
                       <button onClick={() => handleConnect(a.user_id)}
-                        disabled={actionLoading === a.user_id || isConnected}
+                        disabled={actionLoading === a.user_id || isConnected || hasPending}
                         className={`flex-1 rounded-xl px-3 py-2 text-xs font-semibold transition flex items-center justify-center gap-1 ${
                           isConnected
                             ? 'bg-blue-800 text-white cursor-default'
-                            : 'bg-amber-500 text-gray-900 hover:bg-amber-600'
+                            : hasPending
+                              ? 'bg-amber-50 text-amber-700 cursor-default'
+                              : 'bg-amber-500 text-gray-900 hover:bg-amber-600'
                         }`}
                       >
                         {actionLoading === a.user_id ? (
                           <Loader2 className="h-3 w-3 animate-spin" />
                         ) : isConnected ? (
                           <><Check size={13} /> Connected</>
+                        ) : hasPending ? (
+                          <><UserPlus size={13} /> Requested</>
                         ) : (
                           <><UserPlus size={13} /> Connect</>
                         )}
