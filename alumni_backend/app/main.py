@@ -12,7 +12,8 @@ from app.models.student_model import StudentProfile
 from app.models.event_model import Event, EventRegistration
 from app.models.post_model import Post
 from app.models.connection_model import Connection
-from app.models.mentorship_model import MentorshipRequest
+from app.models.mentorship_model import MentorshipRequest, MentorshipMessage
+from app.models.referral_model import ReferralRequest
 from app.models.notification_model import Notification
 
 from datetime import datetime, timedelta, timezone

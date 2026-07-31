@@ -35,6 +35,7 @@ const Notifications = () => {
       case 'event': return <Calendar size={16} className="text-amber-500" />
       case 'connection': return <UserPlus size={16} className="text-blue-500" />
       case 'mentorship': return <Heart size={16} className="text-red-500" />
+      case 'referral': return <Briefcase size={16} className="text-blue-500" />
       case 'job': return <Briefcase size={16} className="text-green-500" />
       default: return <Info size={16} className="text-gray-500" />
     }

@@ -257,21 +257,6 @@ async def admin_list_mentorship(current_user: User = Depends(get_current_user), 
     return result_data
 
 
-@router.put("/mentorship/{request_id}")
-async def admin_update_mentorship(request_id: str, status: str, current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
-    if current_user.role != UserRole.ADMIN:
-        raise HTTPException(status_code=403, detail="Admin access required")
-    if status not in ["accepted", "rejected"]:
-        raise HTTPException(status_code=400, detail="Invalid status")
-    result = await db.execute(select(MentorshipRequest).where(MentorshipRequest.id == request_id))
-    req = result.scalar_one_or_none()
-    if not req:
-        raise HTTPException(status_code=404, detail="Mentorship request not found")
-    req.status = status
-    await db.commit()
-    return {"message": f"Mentorship request {status}"}
-
-
 async def _admin_post_payload(post: Post, db: AsyncSession):
     author_result = await db.execute(select(User).where(User.id == post.author_id))
     author = author_result.scalar_one_or_none()

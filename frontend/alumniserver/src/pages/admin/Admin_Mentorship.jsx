@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../../services/api";
-import { GraduationCap, Loader2, Check, X } from "lucide-react";
+import { GraduationCap, Loader2, User, Eye } from "lucide-react";
 
 const Admin_Mentorship = () => {
   const [requests, setRequests] = useState([]);
@@ -20,15 +20,6 @@ const Admin_Mentorship = () => {
 
   useEffect(() => { loadRequests(); }, []);
 
-  const handleStatus = async (id, status) => {
-    try {
-      await api.put(`/admin/mentorship/${id}?status=${status}`);
-      loadRequests();
-    } catch (err) {
-      alert(err.response?.data?.detail || "Failed to update request");
-    }
-  };
-
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center">
       <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
@@ -37,19 +28,29 @@ const Admin_Mentorship = () => {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+      <h1 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-2">
         <GraduationCap className="text-blue-600" /> Mentorship Requests
       </h1>
+      <div className="flex items-center gap-2 mb-6 text-sm text-gray-500 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+        <Eye size={15} className="text-blue-600 shrink-0" />
+        Mentorship requests are accepted or declined by the alumni mentors themselves. This is a read-only overview.
+      </div>
 
       <div className="space-y-4">
         {requests.map((req) => (
           <div key={req.id} className="bg-white rounded-lg shadow p-5">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-sm font-semibold text-gray-900">Mentor: {req.mentor_name || req.mentor_id}</span>
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-900">
+                    <User size={14} className="text-blue-600" />
+                    {req.mentor_name || req.mentor_id}
+                  </span>
                   <span className="text-gray-400">→</span>
-                  <span className="text-sm font-semibold text-gray-900">Mentee: {req.mentee_name || req.mentee_id}</span>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-900">
+                    <User size={14} className="text-amber-600" />
+                    {req.mentee_name || req.mentee_id}
+                  </span>
                 </div>
                 {req.message && <p className="text-sm text-gray-600 mb-2">{req.message}</p>}
                 <div className="flex items-center gap-2">
@@ -60,18 +61,6 @@ const Admin_Mentorship = () => {
                   <span className="text-xs text-gray-400">{new Date(req.created_at).toLocaleDateString()}</span>
                 </div>
               </div>
-              {req.status === "pending" && (
-                <div className="flex gap-2 ml-4">
-                  <button onClick={() => handleStatus(req.id, "accepted")}
-                    className="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition">
-                    <Check size={16} />
-                  </button>
-                  <button onClick={() => handleStatus(req.id, "rejected")}
-                    className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition">
-                    <X size={16} />
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         ))}
