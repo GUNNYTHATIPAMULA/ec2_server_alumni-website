@@ -22,4 +22,4 @@ async def upload_profile_image(file: UploadFile = File(...)):
     filepath = os.path.join(upload_dir, filename)
     with open(filepath, "wb") as f:
         f.write(contents)
-    return {"url": f"{settings.BASE_URL}/uploads/{filename}"}
+    return {"url": f"/uploads/{filename}"}

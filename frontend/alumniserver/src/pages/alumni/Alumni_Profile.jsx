@@ -17,7 +17,7 @@ import {
 import { api, API_BASE_URL } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
-const img = (url) => url ? (url.startsWith("http") ? url : `${API_BASE_URL}${url}`) : null;
+const img = (url) => url ? (url.includes('/uploads/') && !url.startsWith(API_BASE_URL) ? `${API_BASE_URL}/uploads/${url.split('/uploads/')[1]}` : url) : null;
 
 const Alumni_Profile = () => {
   const navigate = useNavigate();
@@ -382,7 +382,7 @@ const Alumni_Profile = () => {
             <div className="flex items-start gap-4">
               <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold shrink-0 overflow-hidden">
                 {profile.profile_image ? (
-                  <img src={profile.profile_image.startsWith('http') ? profile.profile_image : `${import.meta.env.VITE_BASE_API_URL}${profile.profile_image}`} alt="" className="w-full h-full object-cover" />
+                  <img src={img(profile.profile_image)} alt="" className="w-full h-full object-cover" />
                 ) : (
                   profile.full_name?.charAt(0) || "A"
                 )}
@@ -423,7 +423,7 @@ const Alumni_Profile = () => {
                 <div className="md:col-span-2 flex items-center gap-4">
                   <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl font-bold shrink-0 overflow-hidden">
                     {form.profile_image ? (
-                      <img src={form.profile_image.startsWith('http') ? form.profile_image : `${import.meta.env.VITE_BASE_API_URL}${form.profile_image}`} alt="" className="w-full h-full object-cover" />
+                      <img src={img(form.profile_image)} alt="" className="w-full h-full object-cover" />
                     ) : (
                       profile.full_name?.charAt(0) || "A"
                     )}

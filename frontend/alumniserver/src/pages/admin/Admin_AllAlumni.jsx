@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { api, API_BASE_URL } from '../../services/api'
 import { Loader2, Search, Shield, ShieldOff, Users, Check, X, Mail, Phone, MapPin, GraduationCap, Calendar, ExternalLink, User } from 'lucide-react'
 
-const img = (url) => url ? (url.startsWith('http') ? url : `${API_BASE_URL}${url}`) : null
+const img = (url) => url ? (url.includes('/uploads/') && !url.startsWith(API_BASE_URL) ? `${API_BASE_URL}/uploads/${url.split('/uploads/')[1]}` : url) : null
 
 const Admin_AllAlumni = () => {
   const [alumni, setAlumni] = useState([])

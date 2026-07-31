@@ -6,7 +6,7 @@ import {
   Search, Plus, ArrowLeft, CheckCheck, GraduationCap, Users
 } from 'lucide-react'
 
-const img = (url) => url ? (url.startsWith('http') ? url : `${API_BASE_URL}${url}`) : null
+const img = (url) => url ? (url.includes('/uploads/') && !url.startsWith(API_BASE_URL) ? `${API_BASE_URL}/uploads/${url.split('/uploads/')[1]}` : url) : null
 
 const initials = (name) => (name || '?').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 

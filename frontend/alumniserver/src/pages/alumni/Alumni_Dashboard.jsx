@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { api } from "../../services/api"
+import { api, API_BASE_URL } from "../../services/api"
 import { useAuth } from "../../context/AuthContext"
 import {
   Search, ChevronLeft, ChevronRight, Calendar as CalendarIcon,
@@ -10,6 +10,8 @@ import FutureCalendar from "../../components/FutureCalendar"
 import graduationImg from "../../assets/graduation.jpg"
 import culturalImg from "../../assets/cultural.jpg"
 import graduation2Img from "../../assets/graduation2.jpg"
+
+const img = (url) => url ? (url.includes('/uploads/') && !url.startsWith(API_BASE_URL) ? `${API_BASE_URL}/uploads/${url.split('/uploads/')[1]}` : url) : null
 
 const Alumni_Dashboard = () => {
   const { user } = useAuth()
@@ -70,7 +72,7 @@ const Alumni_Dashboard = () => {
               <div className="flex items-center gap-4">
                 <div className="h-16 w-16 rounded-full ring-2 ring-white/30 bg-white/20 flex items-center justify-center overflow-hidden">
                   {profile?.profile_image ? (
-                    <img src={profile.profile_image.startsWith('http') ? profile.profile_image : `${import.meta.env.VITE_BASE_API_URL}${profile.profile_image}`} alt="" className="h-full w-full object-cover" />
+                    <img src={img(profile.profile_image)} alt="" className="h-full w-full object-cover" />
                   ) : (
                     <span className="text-2xl font-bold text-white">
                       {profile?.full_name?.charAt(0) || user?.fullName?.charAt(0) || 'A'}
@@ -184,7 +186,7 @@ const Alumni_Dashboard = () => {
               <div className="flex items-start gap-3 mb-5">
                 <div className="h-14 w-14 rounded-full bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center ring-2 ring-blue-300 text-white font-bold text-xl overflow-hidden">
                  {profile?.profile_image ? (
-                    <img src={profile.profile_image.startsWith('http') ? profile.profile_image : `${import.meta.env.VITE_BASE_API_URL}${profile.profile_image}`} alt="" className="h-full w-full object-cover" />
+                    <img src={img(profile.profile_image)} alt="" className="h-full w-full object-cover" />
                   ) : (
                     <span className="text-2xl font-bold text-white">
                       {profile?.full_name?.charAt(0) || user?.fullName?.charAt(0) || 'A'}

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { api, API_BASE_URL } from '../../services/api'
 import { Users, UserPlus, Loader2, Check, X, Eye, Search, Briefcase, GraduationCap, Star } from 'lucide-react'
 
-const img = (url) => url ? (url.startsWith('http') ? url : `${API_BASE_URL}${url}`) : null
+const img = (url) => url ? (url.includes('/uploads/') && !url.startsWith(API_BASE_URL) ? `${API_BASE_URL}/uploads/${url.split('/uploads/')[1]}` : url) : null
 
 const Alumni_connection = () => {
   const navigate = useNavigate()
