@@ -59,7 +59,7 @@ const SideBar = ({ user, onClose }) => {
   return (
     <aside
       className={`
-        fixed top-0 left-0 h-full bg-blue-900 text-white shadow-md z-50
+        fixed top-0 left-0 h-full bg-white text-black shadow-md z-50
         transition-all duration-300 flex flex-col
         ${isOpen ? 'w-64' : 'w-0 md:w-20'}
         overflow-hidden md:relative
@@ -67,9 +67,9 @@ const SideBar = ({ user, onClose }) => {
     >
 
       {/* 🔹 User Info */}
-      <div className={`p-4 border-b border-gray-700 ${!isOpen && 'md:px-2'}`}>
+      <div className={`p-4  border-gray-700 ${!isOpen && 'md:px-2'}`}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center font-bold">
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold">
             {user?.name?.charAt(0) || "U"}
           </div>
 
@@ -96,8 +96,8 @@ const SideBar = ({ user, onClose }) => {
                   className={`
                     flex items-center gap-3 px-3 py-2 rounded-lg w-full transition-all
                     ${active
-                      ? "bg-white text-blue-900 font-semibold border-l-4 border-yellow-400"
-                      : "text-white hover:bg-indigo-50 hover:text-indigo-600"}
+                      ? "bg-blue-800 text-white font-semibold border-l-5 border-yellow-400"
+                      : "text-black hover:bg-indigo-50 hover:text-indigo-600"}
                   `}
                   title={!isOpen ? item.label : ""}
                 >
@@ -113,7 +113,7 @@ const SideBar = ({ user, onClose }) => {
       </nav>
 
       {/* 🔹 Quick Actions */}
-      <div className={`p-4 border-t flex-1 border-gray-700 ${!isOpen && 'md:px-2'}`}>
+      <div className={`p-4 flex-1  ${!isOpen && 'md:px-2'}`}>
         <p className={`${!isOpen && 'md:hidden'} text-xs mb-3 text-gray-300`}>
           Quick Actions
         </p>

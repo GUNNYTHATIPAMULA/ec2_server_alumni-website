@@ -87,7 +87,7 @@ const MessagesWidget = () => {
         className="fixed bottom-6 right-10 z-[1000] flex items-center gap-2 px-5 py-3 rounded-full bg-blue-900 text-white shadow-2xl shadow-black/30 hover:bg-blue-800 transition-all hover:scale-105"
       >
         <MessageCircle size={20} />
-        <span className="text-sm font-medium">Messages</span>
+        <span className="text-sm font-medium hidden md:block ">Messages</span>
         {connections.length > 0 && (
           <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-amber-500 text-[11px] font-bold text-gray-900 flex items-center justify-center">
             {connections.length}
@@ -134,7 +134,7 @@ const MessagesWidget = () => {
               </>
             ) : (
               <>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center  gap-2">
                   <MessageCircle size={18} />
                   <span className="text-sm font-semibold">Messages</span>
                 </div>

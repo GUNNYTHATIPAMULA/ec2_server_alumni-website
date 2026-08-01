@@ -126,23 +126,25 @@ const Alumni_Dashboard = () => {
                     className="w-full pl-9 pr-3 py-2 rounded-md bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <ul className="space-y-3 flex-1">
-                  {alumni.map((a) => (
-                    <li key={a.id} className="flex items-center gap-3 p-3 rounded-md border border-gray-200 hover:border-blue-500/30 hover:bg-gray-50 transition-colors">
-                      <div className="h-12 w-12 rounded-full bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center flex-shrink-0 text-white font-bold">
-                        {a.full_name?.charAt(0) || 'A'}
+                {alumni.length > 0 ? (
+                  alumni.map((alumnus) => (
+                    <li key={alumnus.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition cursor-pointer" onClick={() => navigate(`profile/${alumnus.id}`)}>
+                      <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center font-bold overflow-hidden">
+                        {alumnus.profile_image ? (
+                          <img src={img(alumnus.profile_image)} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          alumnus.full_name?.charAt(0) || 'A'
+                        )}
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-sm text-gray-900 truncate">{a.full_name}</p>
-                        <p className="text-xs text-gray-500 truncate">{a.occupation || 'Alumni'}</p>
-                        {a.company_name && <p className="text-xs text-gray-500 truncate">{a.company_name}</p>}
-                      </div>
-                      <div className="flex gap-1.5">
-                        <button title="Connect" className="p-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-900 hover:text-white transition-colors">
-                          <UserPlus className="h-4 w-4" />
-                        </button>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-gray-900">{alumnus.full_name}</span>
+                        <span className="text-xs text-gray-500">{alumnus.occupation || 'Alumnus'}</span>
                       </div>
                     </li>
-                  ))}
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-400 text-center py-4">No alumni found</p>
+                )}
                 </ul>
                 <button onClick={() => navigate('/alumnidashboard/alumnidirectory')}
                   className="mt-4 w-full py-3 rounded-xl text-white font-semibold shadow-lg bg-gradient-to-br from-blue-900 to-blue-700 hover:brightness-95 transition">
