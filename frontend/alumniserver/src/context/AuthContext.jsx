@@ -26,10 +26,30 @@ export function AuthProvider({ children }) {
     const role = getCookie('role') || localStorage.getItem('role')
     const userId = getCookie('userId') || localStorage.getItem('userId')
     const fullName = getCookie('fullName') || localStorage.getItem('fullName')
-    if (token && role) {
-      setUser({ token, role, userId, fullName })
+
+    const validateSession = async () => {
+      if (!token || !role) {
+        setUser(null)
+        setLoading(false)
+        return
+      }
+      try {
+        const res = await api.get('/auth/me')
+        const me = res.data
+        setUser({
+          token,
+          role: me.role || role,
+          userId: String(me.id) || userId,
+          fullName,
+        })
+      } catch {
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
     }
-    setLoading(false)
+
+    validateSession()
   }, [])
 
   const login = async (username, password) => {

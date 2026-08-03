@@ -3,11 +3,12 @@ import Avator from './Avator'
 import { Bell } from 'lucide-react'
 import clglogo from '../assets/tkr-logo.webp'
 import {useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const Navbar = ({ toggleSidebar }) => {
     const [notifications, setNotifications] = useState([])
     const [loading, setLoading] = useState(true)
-  
+    const {user} = useAuth();
     useEffect(() => {
       fetchNotifications()
     }, [])
@@ -52,12 +53,14 @@ const Navbar = ({ toggleSidebar }) => {
       </div>
 
       {/* Right Section */}
-      <div onClick={() => navigate('/alumnidashboard/notifications')}  className="ml-auto cursor-pointer relative mr-8 flex items-center gap-3 bg-slate-100 px-2 py-2 rounded-full">
+      {user && (
+        <div onClick={() => navigate('/alumnidashboard/notifications')}  className="ml-auto cursor-pointer relative mr-8 flex items-center gap-3 bg-slate-100 px-2 py-2 rounded-full">
         <Bell />
         <span className='text-sm absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center'>
           {notifications.filter(n => !n.is_read).length}
         </span>
-      </div>
+      </div>)
+      }
 
     </div>
   )
